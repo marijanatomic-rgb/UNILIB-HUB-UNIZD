@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>UNILIB-HUB Project</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0a0e1a;
+      --surface: #111827;
+      --surface2: #1a2236;
+      --accent: #4af0c4;
+      --accent2: #6c8fff;
+      --text: #e8edf5;
+      --muted: #8898aa;
+      --border: rgba(255,255,255,0.07);
+      --glow: rgba(74, 240, 196, 0.15);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE TEXTURE ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 5vw;
+      background: rgba(10,14,26,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 10rem 5vw 6rem;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 60% 50%, rgba(108,143,255,0.08) 0%, transparent 70%),
+                  radial-gradient(ellipse 40% 40% at 20% 80%, rgba(74,240,196,0.06) 0%, transparent 60%);
+    }
+
+    /* Animated grid */
+    .grid-overlay {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+    }
+
+    /* Floating orb */
+    .orb {
+      position: absolute;
+      width: 500px; height: 500px;
+      right: 5%;
+      top: 50%;
+      transform: translateY(-50%);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(108,143,255,0.12) 0%, rgba(74,240,196,0.04) 50%, transparent 70%);
+      border: 1px solid rgba(74,240,196,0.1);
+      animation: pulse 6s ease-in-out infinite;
+    }
+
+    .orb::before {
+      content: '';
+      position: absolute;
+      inset: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(108,143,255,0.15);
+      animation: pulse 6s ease-in-out infinite 1s;
+    }
+
+    .orb::after {
+      content: '';
+      position: absolute;
+      inset: 100px;
+      border-radius: 50%;
+      border: 1px solid rgba(74,240,196,0.1);
+      animation: pulse 6s ease-in-out infinite 2s;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: translateY(-50%) scale(1); opacity: 0.7; }
+      50% { transform: translateY(-52%) scale(1.03); opacity: 1; }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 700px;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      padding: 0.35rem 0.9rem;
+      border: 1px solid rgba(74,240,196,0.3);
+      border-radius: 2px;
+      background: rgba(74,240,196,0.05);
+    }
+
+    .hero-tag::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: blink 1.5s infinite;
+    }
+
+    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      line-height: 1.05;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-desc {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: var(--muted);
+      max-width: 540px;
+      margin-bottom: 2.5rem;
+    }
+
+    .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    .btn {
+      display: inline-block;
+      padding: 0.8rem 1.8rem;
+      border-radius: 3px;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.25s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0a0e1a;
+    }
+
+    .btn-primary:hover {
+      background: #fff;
+      box-shadow: 0 0 30px rgba(74,240,196,0.3);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      border-color: rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.04);
+    }
+
+    /* ── SECTION COMMONS ── */
+    section {
+      position: relative;
+      padding: 6rem 5vw;
+    }
+
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+
+    .section-intro {
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 560px;
+      line-height: 1.8;
+    }
+
+    .divider {
+      width: 48px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      margin: 1.5rem 0;
+    }
+
+    /* ── ABOUT ── */
+    #about {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+      margin-top: 3rem;
+    }
+
+    .about-visual {
+      position: relative;
+      height: 380px;
+      border-radius: 4px;
+      overflow: hidden;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Animated DNA / molecule placeholder */
+    .molecule {
+      position: relative;
+      width: 200px;
+      height: 200px;
+    }
+
+    .molecule-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1.5px solid rgba(74,240,196,0.25);
+      animation: rotate linear infinite;
+    }
+
+    .molecule-ring:nth-child(1) { inset: 0; animation-duration: 12s; }
+    .molecule-ring:nth-child(2) { inset: 20px; border-color: rgba(108,143,255,0.2); animation-duration: 8s; animation-direction: reverse; }
+    .molecule-ring:nth-child(3) { inset: 40px; border-color: rgba(74,240,196,0.3); animation-duration: 15s; }
+
+    .molecule-dot {
+      position: absolute;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      top: -4px; left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .molecule-ring:nth-child(2) .molecule-dot { background: var(--accent2); }
+
+    @keyframes rotate { to { transform: rotate(360deg); } }
+
+    .molecule-center {
+      position: absolute;
+      inset: 60px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(74,240,196,0.15), transparent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+    }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 2rem;
+    }
+
+    .stat {
+      padding: 1.5rem;
+      background: var(--surface2);
+    }
+
+    .stat-num {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.2rem;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── GALLERY ── */
+    #gallery { background: var(--bg); }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: auto auto;
+      gap: 1rem;
+      margin-top: 3rem;
+    }
+
+    .gallery-item {
+      border-radius: 4px;
+      overflow: hidden;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      aspect-ratio: 4/3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .gallery-item:hover {
+      transform: scale(1.02);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      border-color: rgba(74,240,196,0.2);
+    }
+
+    .gallery-item:nth-child(1) { grid-column: span 2; aspect-ratio: 16/7; }
+
+    .gallery-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: var(--muted);
+    }
+
+    .gallery-icon {
+      font-size: 2rem;
+      opacity: 0.4;
+    }
+
+    .gallery-caption {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      opacity: 0.5;
+    }
+
+    /* Add subtle gradient overlays per item */
+    .gallery-item:nth-child(1) .gallery-placeholder { background: linear-gradient(135deg, rgba(74,240,196,0.03), rgba(108,143,255,0.06)); }
+    .gallery-item:nth-child(2) .gallery-placeholder { background: linear-gradient(135deg, rgba(108,143,255,0.05), transparent); }
+    .gallery-item:nth-child(3) .gallery-placeholder { background: linear-gradient(135deg, rgba(74,240,196,0.04), transparent); }
+    .gallery-item:nth-child(4) .gallery-placeholder { background: linear-gradient(135deg, rgba(108,143,255,0.03), rgba(74,240,196,0.05)); }
+
+    .gallery-upload-hint {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── FINDINGS ── */
+    #findings {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .findings-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .finding-card {
+      padding: 2rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .finding-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s;
+    }
+
+    .finding-card:hover { border-color: rgba(74,240,196,0.2); box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+    .finding-card:hover::before { transform: scaleX(1); }
+
+    .finding-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      margin-bottom: 1rem;
+    }
+
+    .finding-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.2rem;
+      margin-bottom: 0.75rem;
+      line-height: 1.3;
+    }
+
+    .finding-desc {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .finding-tag {
+      display: inline-block;
+      margin-top: 1.2rem;
+      padding: 0.25rem 0.6rem;
+      background: rgba(74,240,196,0.08);
+      border: 1px solid rgba(74,240,196,0.2);
+      border-radius: 2px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+    }
+
+    /* Publications */
+    .publications {
+      margin-top: 3rem;
+    }
+
+    .pub-item {
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+
+    .pub-year {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+      min-width: 48px;
+      padding-top: 0.2rem;
+    }
+
+    .pub-info h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+
+    .pub-info p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+    }
+
+    .pub-link {
+      margin-left: auto;
+      color: var(--accent2);
+      font-size: 0.75rem;
+      text-decoration: none;
+      padding: 0.3rem 0.7rem;
+      border: 1px solid rgba(108,143,255,0.25);
+      border-radius: 2px;
+      white-space: nowrap;
+      align-self: center;
+      transition: all 0.2s;
+    }
+
+    .pub-link:hover { background: rgba(108,143,255,0.1); }
+
+    /* ── TEAM ── */
+    #team { background: var(--bg); }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .member-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .member-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+      border-color: rgba(74,240,196,0.15);
+    }
+
+    .member-avatar {
+      height: 180px;
+      background: var(--surface2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .member-initials {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.5rem;
+      color: var(--muted);
+      opacity: 0.4;
+    }
+
+    .member-avatar-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 80%, rgba(74,240,196,0.06), transparent);
+    }
+
+    .member-info {
+      padding: 1.25rem;
+    }
+
+    .member-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .member-role {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      letter-spacing: 0.06em;
+    }
+
+    .member-dept {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+
+    /* ── CONTACT ── */
+    #contact {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+    }
+
+    .contact-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 5rem;
+      margin-top: 3rem;
+      align-items: start;
+    }
+
+    .contact-info p {
+      font-size: 0.92rem;
+      color: var(--muted);
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+
+    .contact-detail {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .contact-detail .icon {
+      width: 34px; height: 34px;
+      border-radius: 3px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .form-group label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.75rem 1rem;
+      border-radius: 3px;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: rgba(74,240,196,0.4);
+      box-shadow: 0 0 0 3px rgba(74,240,196,0.06);
+    }
+
+    .form-group textarea { resize: vertical; min-height: 130px; }
+
+    .form-group select option { background: var(--surface); }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2rem 5vw;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--accent); }
+
+    /* ── ANIMATIONS ── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .findings-grid { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: 1fr 1fr; }
+      .contact-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+      .gallery-grid { grid-template-columns: 1fr 1fr; }
+      .gallery-item:nth-child(1) { grid-column: span 2; }
+      .nav-links { display: none; }
+    }
+
+    @media (max-width: 600px) {
+      .team-grid { grid-template-columns: 1fr; }
+      .gallery-grid { grid-template-columns: 1fr; }
+      .gallery-item:nth-child(1) { grid-column: span 1; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="nav-logo">◈ NovaSci Lab</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#findings">Research</a></li>
+    <li><a href="#team">Team</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="grid-overlay"></div>
+  <div class="orb"></div>
+
+  <div class="hero-content fade-in visible">
+    <div class="hero-tag">Active Research · 2024–2026</div>
+    <h1>Advancing the<br/><em>Frontiers</em> of Science</h1>
+    <p class="hero-desc">
+      A multidisciplinary research initiative exploring complex systems, novel methodologies, 
+      and breakthrough discoveries. Grounded in rigorous science, driven by curiosity.
+    </p>
+    <div class="btn-group">
+      <a href="#findings" class="btn btn-primary">View Research</a>
+      <a href="#contact" class="btn btn-outline">Collaborate With Us</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── ABOUT ── -->
+<section id="about">
+  <div class="fade-in">
+    <div class="section-label">// 01 — About the Project</div>
+    <h2>What We're<br/>Working On</h2>
+    <div class="divider"></div>
+    <p class="section-intro">
+      Our research focuses on uncovering hidden structures within complex data, developing 
+      novel experimental frameworks, and translating findings into real-world impact.
+    </p>
+  </div>
+
+  <div class="about-grid fade-in">
+    <div>
+      <p style="color: var(--muted); font-size: 0.92rem; line-height: 1.9; margin-bottom: 1.5rem;">
+        Founded within a leading research university, our lab brings together experts across 
+        disciplines to tackle fundamental questions at the intersection of theory and experiment. 
+        We believe breakthrough discoveries emerge at the edges of established fields.
+      </p>
+      <p style="color: var(--muted); font-size: 0.92rem; line-height: 1.9;">
+        Our methodology combines computational modeling, experimental validation, and 
+        open-source dissemination — ensuring our work contributes to the global scientific 
+        community.
+      </p>
+
+      <div class="about-stats">
+        <div class="stat">
+          <div class="stat-num">3+</div>
+          <div class="stat-label">Years Active</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">18</div>
+          <div class="stat-label">Researchers</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">24</div>
+          <div class="stat-label">Publications</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">7</div>
+          <div class="stat-label">Partner Institutions</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-visual">
+      <div class="molecule">
+        <div class="molecule-ring"><div class="molecule-dot"></div></div>
+        <div class="molecule-ring"><div class="molecule-dot"></div></div>
+        <div class="molecule-ring"><div class="molecule-dot"></div></div>
+        <div class="molecule-center">CORE SYSTEM</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── GALLERY ── -->
+<section id="gallery">
+  <div class="fade-in">
+    <div class="section-label">// 02 — Photo Gallery</div>
+    <h2>From the Lab</h2>
+    <div class="divider"></div>
+    <p class="section-intro">Snapshots from our research sessions, fieldwork, and collaborations.</p>
+  </div>
+
+  <div class="gallery-grid fade-in">
+    <div class="gallery-item">
+      <div class="gallery-placeholder">
+        <div class="gallery-icon">🔬</div>
+        <div class="gallery-caption">LAB OVERVIEW — Replace with your photo</div>
+      </div>
+    </div>
+    <div class="gallery-item">
+      <div class="gallery-placeholder">
+        <div class="gallery-icon">🧪</div>
+        <div class="gallery-caption">EXPERIMENT A</div>
+      </div>
+    </div>
+    <div class="gallery-item">
+      <div class="gallery-placeholder">
+        <div class="gallery-icon">📡</div>
+        <div class="gallery-caption">FIELD WORK</div>
+      </div>
+    </div>
+    <div class="gallery-item">
+      <div class="gallery-placeholder">
+        <div class="gallery-icon">💻</div>
+        <div class="gallery-caption">DATA ANALYSIS</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="gallery-upload-hint fade-in">→ Replace placeholder boxes with your actual images using the &lt;img&gt; tag</p>
+</section>
+
+<!-- ── FINDINGS ── -->
+<section id="findings">
+  <div class="fade-in">
+    <div class="section-label">// 03 — Research Findings</div>
+    <h2>Key Findings &amp;<br/>Publications</h2>
+    <div class="divider"></div>
+  </div>
+
+  <div class="findings-grid fade-in">
+    <div class="finding-card">
+      <div class="finding-num">FINDING 01</div>
+      <div class="finding-title">Novel Pattern Recognition in Complex Systems</div>
+      <p class="finding-desc">Our team identified previously uncharacterized structural motifs using advanced spectroscopic techniques combined with machine learning classification.</p>
+      <span class="finding-tag">Published · 2024</span>
+    </div>
+    <div class="finding-card">
+      <div class="finding-num">FINDING 02</div>
+      <div class="finding-title">Scalable Experimental Framework for Rapid Iteration</div>
+      <p class="finding-desc">We developed a modular, reproducible pipeline that reduces experimental setup time by 60%, enabling faster hypothesis testing across research groups.</p>
+      <span class="finding-tag">Preprint · 2025</span>
+    </div>
+    <div class="finding-card">
+      <div class="finding-num">FINDING 03</div>
+      <div class="finding-title">Cross-Disciplinary Validation of Core Hypothesis</div>
+      <p class="finding-desc">Collaboration with partner institutions validated our central theoretical model across three independent experimental contexts and multiple data sets.</p>
+      <span class="finding-tag">In Review · 2025</span>
+    </div>
+  </div>
+
+  <div class="publications fade-in" style="margin-top: 4rem;">
+    <div class="section-label" style="margin-bottom: 1rem;">Selected Publications</div>
+
+    <div class="pub-item">
+      <div class="pub-year">2025</div>
+      <div class="pub-info">
+        <h4>Structural Dynamics in Adaptive Networks Under Perturbation</h4>
+        <p>Smith J., Chen L., Okonkwo R. et al. — Nature Communications</p>
+      </div>
+      <a href="#" class="pub-link">→ View</a>
+    </div>
+    <div class="pub-item">
+      <div class="pub-year">2024</div>
+      <div class="pub-info">
+        <h4>A Unified Framework for Multi-Scale Experimental Analysis</h4>
+        <p>Chen L., Müller A., Patel S. et al. — Science Advances</p>
+      </div>
+      <a href="#" class="pub-link">→ View</a>
+    </div>
+    <div class="pub-item">
+      <div class="pub-year">2024</div>
+      <div class="pub-info">
+        <h4>Emergent Properties in Self-Organizing Biological Systems</h4>
+        <p>Okonkwo R., Tanaka M. et al. — PLOS Computational Biology</p>
+      </div>
+      <a href="#" class="pub-link">→ View</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── TEAM ── -->
+<section id="team">
+  <div class="fade-in">
+    <div class="section-label">// 04 — Our Team</div>
+    <h2>The Researchers</h2>
+    <div class="divider"></div>
+    <p class="section-intro">A diverse team of scientists, engineers, and scholars united by scientific curiosity.</p>
+  </div>
+
+  <div class="team-grid fade-in">
+    <div class="member-card">
+      <div class="member-avatar">
+        <div class="member-avatar-bg"></div>
+        <div class="member-initials">JS</div>
+      </div>
+      <div class="member-info">
+        <div class="member-name">Dr. Jamie Smith</div>
+        <div class="member-role">Principal Investigator</div>
+        <div class="member-dept">Dept. of Computational Biology</div>
+      </div>
+    </div>
+    <div class="member-card">
+      <div class="member-avatar">
+        <div class="member-avatar-bg"></div>
+        <div class="member-initials">LC</div>
+      </div>
+      <div class="member-info">
+        <div class="member-name">Dr. Lin Chen</div>
+        <div class="member-role">Lead Researcher</div>
+        <div class="member-dept">Dept. of Physics & Systems</div>
+      </div>
+    </div>
+    <div class="member-card">
+      <div class="member-avatar">
+        <div class="member-avatar-bg"></div>
+        <div class="member-initials">RO</div>
+      </div>
+      <div class="member-info">
+        <div class="member-name">Dr. Ruth Okonkwo</div>
+        <div class="member-role">Senior Scientist</div>
+        <div class="member-dept">Dept. of Applied Mathematics</div>
+      </div>
+    </div>
+    <div class="member-card">
+      <div class="member-avatar">
+        <div class="member-avatar-bg"></div>
+        <div class="member-initials">SP</div>
+      </div>
+      <div class="member-info">
+        <div class="member-name">Sana Patel</div>
+        <div class="member-role">PhD Researcher</div>
+        <div class="member-dept">Computational Modeling Lab</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ── -->
+<section id="contact">
+  <div class="fade-in">
+    <div class="section-label">// 05 — Contact & Collaboration</div>
+    <h2>Get In Touch</h2>
+    <div class="divider"></div>
+  </div>
+
+  <div class="contact-layout fade-in">
+    <div class="contact-info">
+      <p>
+        We welcome collaboration proposals from academic institutions, industry partners, 
+        and independent researchers. Reach out to discuss joint projects, data sharing, 
+        or speaking invitations.
+      </p>
+
+      <div class="contact-detail">
+        <div class="icon">✉</div>
+        <span>lab@university.edu</span>
+      </div>
+      <div class="contact-detail">
+        <div class="icon">📍</div>
+        <span>Building A, Room 204, University Campus</span>
+      </div>
+      <div class="contact-detail">
+        <div class="icon">📞</div>
+        <span>+1 (555) 000-0000</span>
+      </div>
+      <div class="contact-detail">
+        <div class="icon">🔗</div>
+        <span><a href="#" style="color: var(--accent2);">ResearchGate Profile</a></span>
+      </div>
+    </div>
+
+    <form class="contact-form" onsubmit="handleSubmit(event)">
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" placeholder="Jane" />
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" placeholder="Doe" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" placeholder="you@institution.edu" />
+      </div>
+      <div class="form-group">
+        <label>Inquiry Type</label>
+        <select>
+          <option value="">Select one…</option>
+          <option>Collaboration Proposal</option>
+          <option>Data Access Request</option>
+          <option>Speaking Invitation</option>
+          <option>Student / Internship Inquiry</option>
+          <option>Press & Media</option>
+          <option>General Question</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Message</label>
+        <textarea placeholder="Tell us about your project or question…"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width: fit-content;">Send Message →</button>
+    </form>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <span>© 2025 NovaSci Lab · All rights reserved</span>
+  <span>Built for research, powered by curiosity · <a href="#">Privacy Policy</a></span>
+</footer>
+
+<script>
+  // Scroll animation
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Form submit placeholder
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type=submit]');
+    btn.textContent = '✓ Message Sent';
+    btn.style.background = '#4af0c4';
+    btn.disabled = true;
+    setTimeout(() => {
+      btn.textContent = 'Send Message →';
+      btn.style.background = '';
+      btn.disabled = false;
+      e.target.reset();
+    }, 3000);
+  }
+</script>
+</body>
+</html>
