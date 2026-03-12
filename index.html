@@ -372,6 +372,74 @@
       letter-spacing: 0.04em;
     }
 
+    /* ── ABOUT PILLARS ── */
+    .about-pillars {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .pillar-card {
+      padding: 2rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .pillar-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s;
+    }
+
+    .pillar-card:hover { border-color: rgba(74,240,196,0.2); box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+    .pillar-card:hover::before { transform: scaleX(1); }
+
+    .pillar-icon {
+      font-size: 1.4rem;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      opacity: 0.7;
+    }
+
+    .pillar-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.15rem;
+      margin-bottom: 0.75rem;
+      line-height: 1.3;
+    }
+
+    .pillar-desc {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .about-stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 1.5rem;
+    }
+
+    @media (max-width: 900px) {
+      .about-pillars { grid-template-columns: 1fr; }
+      .about-stats-row { grid-template-columns: 1fr 1fr; }
+    }
+
     /* ── GALLERY ── */
     #gallery { background: var(--bg); }
 
@@ -809,61 +877,47 @@
 <section id="about">
   <div class="fade-in">
     <div class="section-label">// 01 — About the Project</div>
-    <h2>What We're<br/>Working On</h2>
+    <h2>What We’re<br/>Working On</h2>
     <div class="divider"></div>
     <p class="section-intro">
-      The goal of a project The Library as an Accelerator of the Digital Transformation of Research in the Humanities and Cultural Heritage (UNILIB – HUB) is to form and establish a model for GLAM (Galleries, Libraries, Archives, Museums) Laboratory within the research and universiteis libraries as a collaborative environment where researchers in the humanities can explore and interpret their data through contemporary digital tools and methods. The laboratory will connect the expertise of information professionals with the needs of scholars, supporting the transformation of research data into new forms of understanding.
-
-In this environment, theoretical and methodological discussions will be closely integrated with practical, hands-on experimentation on digital materials. Scholars, librarians, and students will work together to design and adapt digital tools according to the specific research questions of each project, fostering innovative, data-driven approaches to humanities research grounded in critical and interpretive thinking.
-
-The laboratory will also serve as a space for developing data literacy among humanities researchers. Participants will learn how to identify, create, and structure research data so that they are suitable for data-driven inquiry. They will receive support in storing, preserving, opening, and reusing their data, as well as in applying digital methods for analysis and interpretation. In this way, the laboratory will encourage the creative and innovative reuse of data, enabling richer and more engaging ways of interpreting and presenting the results of humanities research.
-
-By establishing this laboratory, we are following and actively implementing the strategic orientation of the University of Zadar, which promotes the integration of digital technologies into research in the humanities. We will continue to support and advance this strategy by actively researching the needs of humanities scholars and developing digital tools tailored to their research practices.
-
-In doing so, the laboratory will strengthen the role of the university library as an essential partner in the research process - being a place where scholars receive support not only in accessing and managing information, but also in shaping new digital research methodologies. The library will thus reclaim its central role as a laboratory for humanities research, while also contributing to the modernization of study programmes in information sciences and lifelong learning initiatives, ensuring that contemporary librarians acquire the competencies needed to respond effectively to the evolving needs of today’s scholars..
+      UNILIB–HUB aims to establish a GLAM Laboratory within university libraries — a collaborative space where humanities researchers explore and interpret their data through contemporary digital tools, bridging information expertise with the evolving needs of scholarship.
     </p>
   </div>
 
-  <div class="about-grid fade-in">
-    <div>
-      <p style="color: var(--muted); font-size: 0.92rem; line-height: 1.9; margin-bottom: 1.5rem;">
-        Founded within a leading research university, our lab brings together experts across 
-        disciplines to tackle fundamental questions at the intersection of theory and experiment. 
-        We believe breakthrough discoveries emerge at the edges of established fields.
-      </p>
-      <p style="color: var(--muted); font-size: 0.92rem; line-height: 1.9;">
-        Our methodology combines computational modeling, experimental validation, and 
-        open-source dissemination — ensuring our work contributes to the global scientific 
-        community.
-      </p>
-
-      <div class="about-stats">
-        <div class="stat">
-          <div class="stat-num">3+</div>
-          <div class="stat-label">Years Active</div>
-        </div>
-        <div class="stat">
-          <div class="stat-num">18</div>
-          <div class="stat-label">Researchers</div>
-        </div>
-        <div class="stat">
-          <div class="stat-num">24</div>
-          <div class="stat-label">Publications</div>
-        </div>
-        <div class="stat">
-          <div class="stat-num">7</div>
-          <div class="stat-label">Partner Institutions</div>
-        </div>
-      </div>
+  <div class="about-pillars fade-in">
+    <div class="pillar-card">
+      <div class="pillar-icon">⬡</div>
+      <h3 class="pillar-title">Digital Research Environment</h3>
+      <p class="pillar-desc">Theoretical and methodological discussions integrated with hands-on experimentation on digital materials. Scholars, librarians, and students collaborate to design tools tailored to specific research questions.</p>
     </div>
+    <div class="pillar-card">
+      <div class="pillar-icon">⬡</div>
+      <h3 class="pillar-title">Data Literacy &amp; Support</h3>
+      <p class="pillar-desc">Participants learn to identify, create, and structure research data for data-driven inquiry — with support in storing, preserving, opening, and reusing data for richer humanities research outcomes.</p>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-icon">⬡</div>
+      <h3 class="pillar-title">Library as Research Partner</h3>
+      <p class="pillar-desc">Strengthening the university library’s role beyond information access — into shaping digital research methodologies and contributing to the modernization of information science education.</p>
+    </div>
+  </div>
 
-    <div class="about-visual">
-      <div class="molecule">
-        <div class="molecule-ring"><div class="molecule-dot"></div></div>
-        <div class="molecule-ring"><div class="molecule-dot"></div></div>
-        <div class="molecule-ring"><div class="molecule-dot"></div></div>
-        <div class="molecule-center">CORE SYSTEM</div>
-      </div>
+  <div class="about-stats-row fade-in">
+    <div class="stat">
+      <div class="stat-num">2+</div>
+      <div class="stat-label">Years Active</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">12</div>
+      <div class="stat-label">Researchers</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">4</div>
+      <div class="stat-label">Work Packages</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">3</div>
+      <div class="stat-label">Partner Institutions</div>
     </div>
   </div>
 </section>
@@ -917,20 +971,20 @@ In doing so, the laboratory will strengthen the role of the university library a
 
   <div class="findings-grid fade-in">
     <div class="finding-card">
-      <div class="finding-num">WP 01</div>
+      <div class="finding-num">Work Package 01</div>
       <div class="finding-title">Researching the needs of scholars as users of higher education and university libraries to conduct humanities research and projects in a digital environment
 </div>
       <p class="finding-desc">Team members: Assist. Prof Alica Kolarić (Team lead), Assoc. Prof Martina Dragija Ivanović, Prof Marijana Tomić</p>
           </div>
     <div class="finding-card">
-      <div class="finding-num">WP 02</div>
+      <div class="finding-num">Work Package 02</div>
       <div class="finding-title">Identifying possibilities of using technologies in research in the humanities, digitization procedures, and the impact of digitization processes on humanities scholarship
 </div>
       <p class="finding-desc">Team members: Assoc. Prof Željka Tomasović (Team lead), Prof. Erich Renhart, advisor, Prof Melissa Terras, advisor, Assoc. Prof Nicoletta Saulig, Prof Marijana Tomić
 Senior Resaerach Assist. Laura Grzunov, PhD, Koraljka Kuzman Šlogar, PhD, Josipa Vragolov, doctoral student, Danijel Mofardin, librarian</p>
           </div>
     <div class="finding-card">
-      <div class="finding-num">WP 03</div>
+      <div class="finding-num">Work Package 03</div>
       <div class="finding-title">Work package researching the skills of librarians</div>
       <p class="finding-desc">Team members: Assoc. Prof Martina Dragija Ivanović (Team lead), Assist. Prof Alica Kolarić, Assoc. Prof Željka Tomasović, Zrinka Džoić, reserach assist.; doctoral student
 Josipa Vragolov, doctoral student
@@ -939,7 +993,7 @@ Josipa Vragolov, doctoral student
   </div>
 <div class="findings-grid fade-in">
     <div class="finding-card">
-      <div class="finding-num">WP 04</div>
+      <div class="finding-num">Work Package 04</div>
       <div class="finding-title">Defining the characteristics of the digital library and laying the foundation of the digital laboratory (GLAM Lab) in higher education and university libraries (in Croatia)
 </div>
       <p class="finding-desc">Team members: Prof Marijana Tomić (Team lead), Assoc. Prof Željka Tomasović, Assoc. Prof Nicoletta Saulig, Assist. Laura Grzunov, PhD, Danijel Mofardin, librarian
